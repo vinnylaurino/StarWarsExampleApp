@@ -10,7 +10,6 @@
 </head>
 <body>
   <header>
-
     <img src="images/logo.png" alt="">
   </header>
   <main>
@@ -28,6 +27,61 @@
     </section>
   </main>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script src="index.js"></script>
+  <!-- <script src="index.js"></script> -->
+  <script type="text/javascript">
+    $.ajax({
+      url: "https://swapi.co/api/people",
+      dataType: "json"
+    }).done(function(result){
+      const characters = result.results;
+      appendCharacterOptions(characters);
+      handleCharacterSelection(characters);
+    });
+  function handleCharacterSelection (characters){
+    $("#sw-form").submit(function(event){
+      event.preventDefault();
+      // $(".results").html($("#character").val());
+      const selectedCharacter = $("#character").val();
+      let matchedCharacter;
+
+      $(".results").empty();
+
+      for (let character of characters) {
+        if (character.name == selectedCharacter) {
+          matchedCharacter = character;
+        }
+      }
+  if (matchedCharacter){
+    const properties = [
+      "name",
+      "height",
+      "mass",
+      "hair_color",
+      "skin_color",
+      "eye_color",
+      "birth_year",
+      "gender"
+    ];
+    properties.forEach(function(property) {
+    $(".results").append(
+        `<dl>
+        <dt>${property}</dt>
+        <dd>${matchedCharacter[property]}</dd>
+        </dl>`
+      );
+    });
+  }
+    });
+  }
+  function appendCharacterOptions(characters) {
+    characters.forEach(function(character){
+      const characterOption = generateCharacterOption(character);
+      $("#character").append(characterOption);
+    });
+  }
+  function generateCharacterOption(character){
+    return  `<option value="${character.name}"> ${character.name} </option>`
+  }
+  </script>
 </body>
 </html>
